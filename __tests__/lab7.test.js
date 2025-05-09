@@ -44,14 +44,7 @@ describe('Basic user flow for Website', () => {
     // Expect allArePopulated to still be true
     expect(allArePopulated).toBe(true);
 
-    
-    /**
-    **** TODO - STEP 1 ****
-    * Right now this function is only checking the first <product-item> it found, make it so that
-      it checks every <product-item> it found
-    * Remove the .skip from this it once you are finished writing this test.
-    */
-    
+    // check all items are populated
     for(const i in prodItemsData){
       // console.log(`Checking product item ${i+1}/${prodItemsData.length}`);
       const prod = prodItemsData[i];
@@ -59,6 +52,9 @@ describe('Basic user flow for Website', () => {
       if (prod.price.length == 0) { allArePopulated = false; }
       if (prod.image.length == 0) { allArePopulated = false; }
     }
+    expect(allArePopulated).toBe(true);
+
+
   }, 10000);
 
   it('Make sure <product-item> elements are populated', async () => {
@@ -75,7 +71,7 @@ describe('Basic user flow for Website', () => {
 
   // Check to make sure that when you click "Add to Cart" on the first <product-item> that
   // the button swaps to "Remove from Cart"
-  it.skip('Clicking the "Add to Cart" button should change button text', async () => {
+  it('Clicking the "Add to Cart" button should change button text', async () => {
     console.log('Checking the "Add to Cart" button...');
 
     /**
@@ -86,7 +82,20 @@ describe('Basic user flow for Website', () => {
      * Once you have the innerText property, use innerText.jsonValue() to get the text value of it
      * Remember to remove the .skip from this it once you are finished writing this test.
      */
+    //Get the button needed
+    const productItem = await page.$('product-item');
+    const shadowRoot = await productItem.getProperty("shadowRoot"); 
+    const button = await shadowRoot.$("button");
 
+    const innerText_b4 = await (await button.getProperty("innerText")).jsonValue();
+    console.log(`Text B4ore: ${innerText_b4}`);
+
+    await button.click(); // CLICK
+
+    const innerText_af = await (await button.getProperty("innerText")).jsonValue();
+    console.log(`Text After: ${innerText_af}`);
+
+    expect(innerText_af).toBe("Remove from Cart");
   }, 2500);
 
   // Check to make sure that after clicking "Add to Cart" on every <product-item> that the Cart
